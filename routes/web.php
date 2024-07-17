@@ -21,27 +21,26 @@ Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'auth.session'])->group(function () {
 
-
-Route::post('register', [UserController::class,'register'])->name('register');
+Route::post('usercreate', [UserController::class,'usercreate'])->name('usercreate');
 
 //user
-Route::get('userlist', [UserController::class,'showUserlistForm']);
-Route::get('userdelete', [UserController::class,'showUserdeleteForm']);
+Route::get('userlist', [UserController::class,'showUserlistForm'])->name('userlist');
+Route::get('userdelete', [UserController::class,'showUserdeleteForm'])->name('userdelete');
 Route::get('useradd', [UserController::class,'showUseraddForm'])->name('useradd');
-Route::get('useredit', [UserController::class,'showUsereditForm']); 
+Route::get('useredit', [UserController::class,'showUsereditForm'])->name('useredit');
 
 
 //category
-Route::get('categorylist', [CategoryController::class,'showCategorylistForm']);
-Route::get('categorydelete', [CategoryController::class,'showCategorydeleteForm']);
-Route::get('categoryadd', [CategoryController::class,'showCategoryaddForm']);
-Route::get('categoryedit', [CategoryController::class,'showCategoryeditForm']); 
+Route::get('categorylist', [CategoryController::class,'showCategorylistForm'])->name('categorylist');
+Route::get('categorydelete', [CategoryController::class,'showCategorydeleteForm'])->name('categorydelete');
+Route::get('categoryadd', [CategoryController::class,'showCategoryaddForm'])->name('categoryadd');
+Route::get('categoryedit', [CategoryController::class,'showCategoryeditForm'])->name('categoryedit'); 
 
 
 //product
-Route::get('productlist', [ProductController::class,'showProductlistForm']);
-Route::get('productdelete', [ProductController::class,'showProductdeleteForm']);
-Route::get('productadd', [ProductController::class,'showProductaddForm']);
-Route::get('productedit', [ProductController::class,'showProducteditForm']);
+Route::get('productlist', [ProductController::class,'showProductlistForm'])->name('productlist');
+Route::get('productdelete', [ProductController::class,'showProductdeleteForm'])->name('productdelete');
+Route::get('productadd', [ProductController::class,'showProductaddForm'])->name('productadd');
+Route::get('productedit', [ProductController::class,'showProducteditForm'])->name('productedit');
 
 });

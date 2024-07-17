@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function register(Request $request)
+    public function usercreate(Request $request)
     {
         $this->validator($request->all())->validate();
         $user = $this->create($request->all());
         auth()->login($user);
-        return  redirect()->route('useradd');
+        return  redirect()->route('userlist');
     }
     protected function validator(array $data)
     {

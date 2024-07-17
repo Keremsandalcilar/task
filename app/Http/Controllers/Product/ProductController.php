@@ -14,7 +14,7 @@ class ProductController extends Controller
     {
         return view('product.product');
     }
-    public function add(Request $request)
+    public function productcreate(Request $request)
     {
         $this->validator($request->all())->validate();
         $product = $this->create($request->all());

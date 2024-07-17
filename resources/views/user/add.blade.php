@@ -134,7 +134,7 @@
             </div>
             <div class="col-md-12">
                 <div>
-                    <form method="POST" action="{{ route('register') }}"> @csrf 
+                    <form method="POST" action="{{ route('usercreate') }}"> @csrf 
                         <label for="usertitle">Usertitle</label>
                         <input id="usertitle" type="text" name="usertitle" required>
                         <label for="username">Username</label>
