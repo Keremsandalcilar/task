@@ -2,61 +2,122 @@
 
 namespace App\Http\Controllers\User;
 
-
-use App\Http\Controllers\Controller; 
-use App\Models\User; 
-use Illuminate\Http\Request; 
-use Illuminate\Support\Facades\Hash; 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use PhpParser\Node\NullableType;
 
 class UserController extends Controller
 {
-    public function usercreate(Request $request)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $users = User::all();
+        return view('user.list', ['users' => $users]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('user.add');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
     {
         $this->validator($request->all())->validate();
-        $user = $this->create($request->all());
-        auth()->login($user);
-        return  redirect()->route('userlist');
+
+        User::create([
+            'title' => $request['title'],
+            'username' => $request['username'],
+            'password' => Hash::make($request['password']),
+        ]);
+        return redirect()->route('userlist')->with('swallMessages', ['icon' => 'success', 'title' => 'Başarılı', 'text' => 'Kullanıcı kayıt edildi.']);
     }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show()
+    {
+        $user = auth()->user();
+        return view('profile.edit', compact('user'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('userlist')->with('swallMessages', ['icon' => 'error', 'title' => 'Uyarı', 'text' => 'Kullanıcı bulunamadı']);
+            //return abort(404);
+        }
+        return view('user.edit', compact('user'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $this->validator($request->all())->validate();
+        $user = User::find($id);
+        if (!$user) {
+            return abort(404);
+        }
+
+        $user->username = $request->input('username');
+        $user->title = $request->input('title');    
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+        $a = $user->updateOrFail();
+
+        return redirect()->route('useredit', [$user->id])->with('swallMessages', ['icon' => 'success', 'title' => 'Başarılı', 'text' => 'Kullanıcı güncellendi']);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'usertitle' => ['required', 'string','max:255'], 
-            'username' => ['required', 'string','max:255', 'unique:users'], 
-            'password' => ['required', 'string', 'min:3', 'confirmed'],
+            'title' => ['string', 'required', 'max:255'],
+            'username' => ['string', 'required'],
+            'password' => ['nullable', 'string', 'min:6'],
+            'password_confirmation' => ['same:password','min:6'],
         ]);
     }
-    protected function create(array $data)
+
+
+    public function destroy($id)
     {
-        return User::create([
-            'usertitle' => $data['usertitle'], 
-            'username' => $data['username'], 
-            'password' => Hash::make($data['password']),
-        ]);
+        User::find($id)->delete();
+        return redirect()->route('userlist')->with('swallMessages', ['icon' => 'success', 'title' => 'Başarılı', 'text' => 'Kullanıcı silindi.']);
     }
-
     
-      //user
-      public function showUserlistForm()
-      {
-        $users = User::all();
 
-          return view('user.list',['users'=> $users]);
-      }
-      public function showUsereditForm()
-      {
-          return view('user.edit');
-      }
-      public function showUseraddForm()
-      {
-          return view('user.add');
-      }
-      public function showUserdeleteForm()
-      {
-          return view('user.delete');
-      }
-  
+    public function bulkDelete(Request $request)
+    {
+        $userIds = $request->input('user_ids');
+
+        if (!empty($userIds)) {
+            User::whereIn('id', $userIds)->delete();
+            return redirect()->route('userlist')->with('swallMessages' ,['icon' => 'success', 'title' => 'Başarılı', 'text' => 'Seçili kullanıcılar silindi.']);
+        }
+        return redirect()->route('userlist')->with('swallMessages', ['icon' => 'error', 'title' => 'Uyarı', 'text' => 'Hiçbir kullanıcı seçilemedi']);
+    }
 }
-
 

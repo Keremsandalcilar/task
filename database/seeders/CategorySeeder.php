@@ -15,21 +15,29 @@ class CategorySeeder extends Seeder
     {
         $datas = [
             [
-                "category_id"=> "1",
-                "category_title" => "pantolon",
-                "category_description" => "10",
-                "category_status"=> "12 adet",
-                        ],
+                "title" => "Pantolon",
+                "description" => "açıklama",
+                "status" => "active"
+            ],
+            [
+                "title" => "Ceket",
+                "description" => "açıklama",
+                "status" => "active"
+            ],
+            [
+                "title" => "Ayakkabı",
+                "description" => "açıklama",
+                "status" => "active"
+            ]
+
         ];
 
-        foreach($datas as $data){
+        foreach ($datas as $data) {
             $category = new Category();
-            $category->category_id = $data["category_id"];
-            $category->category_title = $data["category_title"];
-            $category->category_description = $data["category_description"];
-            $category->category_status = $data["category_status"];
+            $category->title = $data["title"];
+            $category->description = $data["description"];
+            $category->status = $data["status"];
             $category->save();
         }
     }
 }
-

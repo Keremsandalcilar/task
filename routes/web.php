@@ -21,26 +21,35 @@ Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'auth.session'])->group(function () {
 
-Route::post('usercreate', [UserController::class,'usercreate'])->name('usercreate');
-
 //user
-Route::get('userlist', [UserController::class,'showUserlistForm'])->name('userlist');
-Route::get('userdelete', [UserController::class,'showUserdeleteForm'])->name('userdelete');
-Route::get('useradd', [UserController::class,'showUseraddForm'])->name('useradd');
-Route::get('useredit', [UserController::class,'showUsereditForm'])->name('useredit');
+Route::get('userlist', [UserController::class,'index'])->name('userlist');
+Route::get('useradd', [UserController::class,'create'])->name('useradd');
 
+Route::get('useredit/{id}', [UserController::class, 'edit'])->name('useredit');
+Route::post('userupdate/{id}', [UserController::class, 'update'])->name('userupdate');
+
+Route::post('usercreate', [UserController::class,'store'])->name('usercreate');
+Route::get('userdelete/{id}', [UserController::class,'destroy'])->name('userdelete');
+Route::post('userbulkdelete', [UserController::class, 'bulkDelete'])->name('userbulkdelete');
 
 //category
-Route::get('categorylist', [CategoryController::class,'showCategorylistForm'])->name('categorylist');
-Route::get('categorydelete', [CategoryController::class,'showCategorydeleteForm'])->name('categorydelete');
-Route::get('categoryadd', [CategoryController::class,'showCategoryaddForm'])->name('categoryadd');
-Route::get('categoryedit', [CategoryController::class,'showCategoryeditForm'])->name('categoryedit'); 
+Route::get('categorylist', [CategoryController::class,'index'])->name('categorylist');
+Route::get('categoryadd', [CategoryController::class,'create'])->name('categoryadd');
 
+Route::get('categoryedit/{id}', [CategoryController::class, 'edit'])->name('categoryedit');
+Route::post('categoryupdate/{id}', [CategoryController::class, 'update'])->name('categoryupdate');
+
+Route::post('categorycreate', [CategoryController::class,'store'])->name('categorycreate');
+Route::get('categorydelete/{id}', [CategoryController::class,'destroy'])->name('categorydelete');
 
 //product
-Route::get('productlist', [ProductController::class,'showProductlistForm'])->name('productlist');
-Route::get('productdelete', [ProductController::class,'showProductdeleteForm'])->name('productdelete');
-Route::get('productadd', [ProductController::class,'showProductaddForm'])->name('productadd');
-Route::get('productedit', [ProductController::class,'showProducteditForm'])->name('productedit');
+Route::get('productlist', [ProductController::class,'index'])->name('productlist');
+Route::get('productadd', [ProductController::class,'create'])->name('productadd');
+
+Route::get('productedit/{id}', [ProductController::class, 'edit'])->name('productedit');
+Route::post('productupdate/{id}', [ProductController::class, 'update'])->name('productupdate');
+
+Route::post('productcreate', [ProductController::class,'store'])->name('productcreate');    
+Route::get('productdelete/{id}', [ProductController::class,'destroy'])->name('productdelete');
 
 });

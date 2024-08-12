@@ -5,16 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
     
     protected $fillable = [
-        'product_title',
-        'product_category_id',
+        'id',
+        'title',
+        'category_id',
         'barcode',
-        'product_status',
+        'stock',
+        'price',
     ];
 
+    public function category()
+    {
+        return $this->hasOne(Category::class,'id');
+    }
 }

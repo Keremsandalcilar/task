@@ -15,30 +15,28 @@ class UserSeeder extends Seeder
     {
         $datas = [
             [
-                "usertitle" => "kerem34",
-                "username" => "kerems36",
-                "password" => "12345",
-                        ],
-                          [
-                "usertitle" => "kerem53",
-                "username" => "keremss53",
-                "password" => "12345",
-                        ],
-                          [
-                "usertitle" => "kerem44",
-                "username" => "keremss44",
-                "password" => "12345",
-                        ],
+                "title" => "kerem34",
+                "username" => "kerems34",
+                "password" => "123456",
+            ],
+            [
+                "title" => "kerem53",
+                "username" => "kerems53",
+                "password" => "123456",
+            ],
+            [
+                "title" => "kerem44",
+                "username" => "kerems44",
+                "password" => "123456",
+            ],
         ];
 
-        foreach($datas as $data){
+        foreach ($datas as $data) {
             $user = new User();
             $user->username = $data["username"];
-            $user->usertitle = $data["usertitle"];
+            $user->title = $data["title"];
             $user->password = $data["password"];
             $user->save();
         }
     }
 }
-
-

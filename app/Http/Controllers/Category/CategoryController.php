@@ -4,67 +4,104 @@ namespace App\Http\Controllers\Category;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Category; 
-use Illuminate\Support\Facades\Hash; 
+use PhpParser\Node\Stmt\Echo_;
 
 class CategoryController extends Controller
-  
 {
-    public function showCategoryForm()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        return view('category.category');
-    }
-    public function add(Request $request)
-    {
-        $this->validator($request->all())->validate();
-        $category = $this->create($request->all());
-        return redirect()->route('categorylist');
-    }
-    
-    public function edit(Request $request)
-    {
-        $this->validator($request->all())->validate();
-        $category = $this->create($request->all());
-        return redirect()->route('categoryedit');
-    }
-
-        protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'category_id'=> ['required','string'],
-            'category_title' => ['required', 'string', 'max:255'], 
-            'category_description' => ['required', 'string','max:255'], 
-            'category_status' => ['required', 'string'],
-        ]);
-    }
-    protected function create(array $data)
-    {
-        
-        return Category::create([
-            'category_id'=> $data['category_id'],
-            'category_title' => $data['category_title'], 
-            'category_description' => $data['category_description'], 
-            'category_status' => $data['category_status'],
-        ]);
-    }
-
-    public function showCategorylistForm()
-    {
-        $categories = Category::all();  
+        $categories = Category::all();
         return view('category.list',['categories'=> $categories]);
     }
-    public function showCategoryeditForm()
-    {
-        return view('category.edit');
-    }
-    public function showCategoryaddForm()
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
         return view('category.add');
     }
-    public function showCategorydeleteForm()
-    {
-        return view('category.delete');
-    }
-}
 
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        Category::create([
+            'title' => $request['title'],
+            'description' => $request['description'],
+            'status' => $request['status'],
+        ]);
+        return redirect()->route('categorylist')->with('swallMessages', ['icon' => 'success', 'title' => 'Başarılı', 'text' => 'Kategori kayıt edildi.']);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $category = Category::find($id);
+        
+        if (!$category) {
+            return redirect()->route('categorylist')->with('swallMessages', ['icon' => 'error', 'title' => 'Uyarı', 'text' => 'Kategori bulunamadı']);
+            //return abort(404);
+        }
+        return view('category.edit', compact('category'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $this->validator($request->all())->validate();
+
+        $category = Category::find($id);
+        if (!$category) {
+            return abort(404);
+        }
+        $category->title = $request->input('title');
+        $category->description = $request->input('description');
+        $category->status = $request->input('status');
+        $category->update();
+
+        return redirect()->route('categoryedit', [$category->id])->with('swallMessages', ['icon' => 'success', 'title' => 'Başarılı', 'text' => 'Kategori güncellendi']);
+    }
+
+    
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:255'],
+            'status' => ['required', 'string'],
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        $category = Category::find($id);
+        $category->product()->update(['category_id' => null ]);
+        $category->delete();
+        return redirect()->route('categorylist')->with('swallMessages', ['icon' => 'success', 'title' => 'Başarılı', 'text' => 'Kategori silindi.']);
+    }
+    
+}
